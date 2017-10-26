@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:runtime
+FROM microsoft/dotnet:1.1-runtime
 
 RUN set -ex && \
     curl -L -o azcopy.tar.gz https://aka.ms/downloadazcopyprlinux && \
