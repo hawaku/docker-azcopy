@@ -1,16 +1,21 @@
-FROM microsoft/dotnet:2.1-runtime
+FROM ubuntu AS Builder
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-         rsync \
-         libunwind8 \
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y \
+        curl \
     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workdir
 
 RUN set -ex \
     && curl -L -o azcopy.tar.gz \
-    https://aka.ms/downloadazcopylinux64 \
-    && tar -xf azcopy.tar.gz && rm -f azcopy.tar.gz \
-    && ./install.sh && rm -f install.sh \
-    && rm -rf azcopy
+    https://aka.ms/downloadazcopy-v10-linux \
+    && tar -xf azcopy.tar.gz --strip-components=1 \
+    && rm -f azcopy.tar.gz
 
-CMD ["azcopy", "--version"]
+FROM ubuntu
+
+COPY --from=Builder /workdir/azcopy /usr/local/bin
+
+CMD [ "azcopy", "--help" ]
