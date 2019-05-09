@@ -16,6 +16,12 @@ RUN set -ex \
 
 FROM ubuntu
 
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=Builder /workdir/azcopy /usr/local/bin
 
 CMD [ "azcopy", "--help" ]
